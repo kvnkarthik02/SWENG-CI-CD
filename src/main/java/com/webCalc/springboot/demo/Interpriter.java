@@ -1,3 +1,4 @@
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class Interpriter {   
@@ -11,7 +12,10 @@ public class Interpriter {
      * @param equation String representing an equation.
      * @return result calculated from the equation.
      */
-    public static Double calculate(String equation) {
+    public static String calculate(String equation) {
+    	if (!isValidEquation(equation)) {
+    		return "Error: problem found in equation";
+    	}
     	
         double answer = 0;
         String[] splitEquation = splitEquation(equation);
@@ -44,7 +48,7 @@ public class Interpriter {
                 if (!ops.isEmpty() && ops.safePop().equals("(")) {
                     ops.pop();
                 } else {
-                    System.out.println("Error: missing bracket in equation");
+                    return "Error: missing bracket in equation";
                 }
             }
         }
@@ -53,7 +57,7 @@ public class Interpriter {
         while (!ops.isEmpty() && isOperator(ops.safePop())) {
             String calculate = ops.pop();
             doACalculation(calculate, ops, nums);
-            System.out.println(calculate);
+            //System.out.println(calculate);
         }
 
         // returning result left in value stack
@@ -61,10 +65,11 @@ public class Interpriter {
 
         // check for Errors in stacks
         if (!ops.isEmpty() || !nums.isEmpty()) {
-            System.out.println("Error: invalid input format (values where left in stacks with no use)");
+            return "Error: invalid input format (values where left in stacks with no use)";
         }
-
-        return answer;
+        
+        DecimalFormat numberFormat = new DecimalFormat("#.000");
+        return "" + numberFormat.format(answer);
     }
 
     /**
@@ -86,12 +91,16 @@ public class Interpriter {
 		// 5(5) -> 5*(5)
 		// (5)5 -> (5) * 5
 		for (int number = 0; number <= 9; number++) {
-		    userInput = userInput.replace(number + "(", number + "*(");
-		    userInput = userInput.replace(")" + number, ")*" + number);
+		    eq = eq.replace(number + "(", number + "*(");
+		    eq = eq.replace(")" + number, ")*" + number);
 		}		
 		//userInput = userInput.replace("-(", "-1*(");
 
         System.out.println("interpreted as:" + eq);
+        
+        //changes "exp" to 'e' and "log" to 'l' so they can be considered operators
+    	eq = eq.replace("exp","e");
+    	eq = eq.replace("log","l");
 
         //finds where chars in the string change from operators to values and adds them to spliEq once they are found
         int trackerPoint = 0;
@@ -148,8 +157,6 @@ public class Interpriter {
         String[] splitString = new String[splitEq.size()];
         splitEq.toArray(splitString);
 
-        //System.out.println(splitString[0] + " " + splitString[1] + " " + splitString[2]);
-
         return splitString;
 
     }
@@ -175,7 +182,7 @@ public class Interpriter {
      * @return True if x is an operator. False, otherwise.
      */
     private static boolean isOperator(char x) {
-        if (x == '+' || x == '-' || x == '*' || x == '/' || x == '^') {
+        if (x == '+' || x == '-' || x == '*' || x == '/' || x == '^' || x == 'e' || x == 'l') {
             return true;
         } else {
             return false;
@@ -188,20 +195,24 @@ public class Interpriter {
      * @param equation String representing the equation.
      * @return True if the equation is valid. False, otherwise.
      */
-    public static boolean isValidEquation(String equation)
-    {
+    public static boolean isValidEquation(String equation) {
     	int openBracketsCount = 0;
     	int closeBracketsCount = 0;
     	int operatorCount = 0;
+    	
+        //changes "exp" to 'e' and "log" to 'l' so they can be considered operators
+    	equation = equation.replace("exp","e");
+    	equation = equation.replace("log","l");
     	
     	// Accounts for equations such as 
     	//	*1+2+3
     	//	1+2+3*
     	//	)1+2+3
     	//	1+2+3(
-    	if ((equation.charAt(0) != '-' && isOperator(equation.charAt(0))) || isOperator(equation.charAt(equation.length() - 1))
+    	if ((equation.charAt(0) != '-' && equation.charAt(0) != 'e' && equation.charAt(0) != 'l' && isOperator(equation.charAt(0))) || isOperator(equation.charAt(equation.length() - 1))
     			|| equation.charAt(0) == ')' || equation.charAt(equation.length() - 1) == '(')
 		{
+    		System.out.println("1");
 			return false;
 		}
     	
@@ -211,8 +222,9 @@ public class Interpriter {
     		{
     			// Accounts for equations where an operator is after an open bracket such as:
     			//	1+(*2+3)
-    			if (isOperator(equation.charAt(currentChar + 1)))
+    			if (isOperator(equation.charAt(currentChar + 1)) && equation.charAt(currentChar + 1) != 'e' && equation.charAt(currentChar + 1) != 'l')
     			{
+    				System.out.println("error2");
     				return false;
     			}
     			openBracketsCount++;
@@ -223,6 +235,7 @@ public class Interpriter {
     			//	1+(2+3*)
     			if (isOperator(equation.charAt(currentChar - 1)))
     			{
+    				System.out.println("3");
     				return false;
     			}
     			closeBracketsCount++;
@@ -234,12 +247,14 @@ public class Interpriter {
     			//	.1
     			if (currentChar < equation.length() - 1 && Character.isDigit(equation.charAt(currentChar + 1)))
     			{
+    				System.out.println("4");
     				return true;
     			}
     			// Return true if there's a number before the decimal point such as:
     			//	2.
     			else if (Character.isDigit(equation.charAt(currentChar - 1)))
     			{
+    				System.out.println("5");
     				return true;
     			}
     			// Otherwie, return false.
@@ -248,6 +263,7 @@ public class Interpriter {
     		// Accounts for equations that contain non-operator and non-digit characters.
     		else if (!isOperator(equation.charAt(currentChar)) && !Character.isDigit(equation.charAt(currentChar)))
     		{
+    			System.out.println("6");
     			return false;
     		}
     		// Account for equations with two operators in a row.
@@ -269,16 +285,17 @@ public class Interpriter {
     	//	1+2+3)
     	if (openBracketsCount != closeBracketsCount)
 		{
+    		System.out.println("7");
 			return false;
 		}
     	
     	// Accounts for sole numbers such as:
     	//	1
-    	if (operatorCount == 0)
-    	{
-    		System.out.println("Please enter an equation with operators.");
-    		return false;
-    	}
+//    	if (operatorCount == 0)
+//    	{
+//    		System.out.println("Please enter an equation with operators.");
+//    		return false;
+//    	}
     	 
     	return true;
     }
@@ -311,22 +328,23 @@ public class Interpriter {
      */
     private static void doACalculation(String operator, Stack<String> ops, Stack<Double> nums) {
         double val1, val2;
+        //System.out.println("doing a " + operator + " operation");
 
         if (nums.isEmpty()) {
-            System.out.println("Error in input");
+            System.out.println("Error in input with code 1");
             return;
         } else {
             val2 = nums.pop();
         }
 
         if (nums.isEmpty() && !operator.equals("e") && !operator.equals("l")) {
-            System.out.println("Error in input");
+            System.out.println("Error in input with code 2");
             return;
         } else if (!operator.equals("e") && !operator.equals("l")) {
             val1 = nums.pop();
         } else {
-            System.out.println("Error in input");
-            return;
+        	// val1 is not used to we just give it a value of 0
+        	val1 = 0;
         }
 
         double output = 0;
@@ -344,11 +362,15 @@ public class Interpriter {
         } else if (operator.equals("e")) {
             output = Math.exp(val2);
         } else if (operator.equals("l")) {
-            output = Math.log(val2);
+            output = customLog(Math.E, val2);
         }
 
         //System.out.println("Val1: " + val1 + ", Val2: " + val2 + ", Output: " + output);
 
         nums.push(output);
     }
+
+    private static double customLog(double base, double num) {
+    	return Math.log(num) / Math.log(base);
+	}
 }
