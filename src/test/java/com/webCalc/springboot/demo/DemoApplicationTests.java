@@ -39,6 +39,21 @@ class DemoApplicationTests
 		input = ("1 */ 1");
 		assertEquals("Test for multiple operators in a row.", output, Interpriter.calculate(input));
 		
+		input = "test";
+		assertEquals("Test for non-equations.", output, Interpriter.calculate(input));
+		
+		input = "(1 + 2";
+		assertEquals("Test for unpaired brackets.", output, Interpriter.calculate(input));
+		
+		input = "1 + (*2)";
+		assertEquals("Test for misplaced operators.", output, Interpriter.calculate(input));
+		
+		input = "1 + (2*)";
+		assertEquals("Test for misplaced operators.", output, Interpriter.calculate(input));
+		
+		input = "1 +. (2)";
+		assertEquals("Test for misplaced operators.", output, Interpriter.calculate(input));
+		
 		input = "";
 		output = "Error: please enter an equation";
 		assertEquals("Test with no input.", output, Interpriter.calculate(input));
@@ -66,6 +81,21 @@ class DemoApplicationTests
         input = "10.1 + 10.1 + 5.6";
         output = "25.800";
         assertEquals("Test addition with more than two numbers.", output, Interpriter.calculate(input));
+	}
+	
+	//Tests interpreter calculate() decimal point position such as:
+	//	1. = 1.0
+	//	.1	= 0.1
+	@Test
+	public void calculateDecimalPointPosition()
+	{
+		String input = "10. + 20.";
+		String output = "30.000";
+		assertEquals("Test decimal point after a whole number.", output, Interpriter.calculate(input));
+		
+		input = ".1 + .2";
+		output = ".300";
+		assertEquals("Test decimal point before a whole number.", output, Interpriter.calculate(input));
 	}
 	
 	// Tests interpreter calculate() subtraction.
@@ -186,8 +216,66 @@ class DemoApplicationTests
 	    
 	    input = "(5^(2*3)/-25/5^2)+-50--(10)4";
 	    output = "-35.000";
-	    assertEquals("Test with comples brackets '(5^(2*3)/-25/5^2)+-50--(10)4'.", output, Interpriter.calculate(input));
-	    
+	    assertEquals("Test with complex brackets '(5^(2*3)/-25/5^2)+-50--(10)4'.", output, Interpriter.calculate(input));
 	}
+	
+	// Test interpreter with natural log.
+	@Test
+	public void calculateNaturalLog()
+	{
+		String input = "log(10)";
+		String output = "2.303";
+		assertEquals("Test natural log with positive whole number.", output, Interpriter.calculate(input));
+		
+		input = "log(-10)";
+		output = "NaN";
+		assertEquals("Test natural log with negative whole number.", output, Interpriter.calculate(input));
+		
+		// (-((5^(2*3)/-25/5^2)+-50--(10)4)) = 35
+		input = "log(-((5^(2*3)/-25/5^2)+-50--(10)4))";
+	    output = "3.555";
+	    assertEquals("Test with complex natural log 'log(-((5^(2*3)/-25/5^2)+-50--(10)4))'.", output, Interpriter.calculate(input));
+	    
+	    // The same as the above equation except it's being multiplied by 2 and then being halved, 
+	    //  cancelling each other resulting in the same output as above.
+	    input = "2log(-((5^(2*3)/-25/5^2)+-50--(10)4))/2";
+	    assertEquals("Test with natural log being operated on.", output, Interpriter.calculate(input));
+	}
+	
+	// Test interpreter with natural exponent.
+	@Test
+	public void calculateNaturalExponent()
+	{
+		String input = "exp(10)";
+		String output = "22026.466";
+		assertEquals("Test natural exponent with positive whole number.", output, Interpriter.calculate(input));
+
+		input = "exp(-1)";
+		output = ".368";
+		assertEquals("Test natural exponent with negative whole number.", output, Interpriter.calculate(input));
+
+		// (-((5^(2*3)/-25/5^2) + 15)) = 10
+		input = "exp(-((5^(2*3)/-25/5^2) + 15))";
+		output = "22026.466";
+		assertEquals("Test with complex natural exponent 'exponent(-((5^(2*3)/-25/5^2)+-50--(10)4))'.", output, Interpriter.calculate(input));
+
+		// The same as the above equation except it's being multiplied by 2 and then being halved, 
+		//  cancelling each other resulting in the same output as above.
+		input = "2exp(-((5^(2*3)/-25/5^2) + 15))/2";
+		assertEquals("Test with natural exponent being operated on.", output, Interpriter.calculate(input));
+		
+		// Tests for exp and log cancelling each other such that their input is left behind such as:
+		// exp(log(x)) = x
+		input = "exp(log(10))";
+		output = "10.000";
+		assertEquals("Test natural log in natural exponent cancel each other.", output, Interpriter.calculate(input));
+		
+		// Tests for exp and log cancelling each other such that their input is left behind such as:
+		// exp(log(x)) = x
+		input = "log(exp(10))";
+		assertEquals("Test natural exponent in natural log cancel each other.", output, Interpriter.calculate(input));
+	
+	}
+	
 
 }

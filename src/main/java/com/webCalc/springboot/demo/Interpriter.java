@@ -31,11 +31,17 @@ public class Interpriter {
 		//Replaces instances of numbers beside brackets with the two number separated with a multiplication operator(*) such as:
 		// 5(5) -> 5*(5)
 		// (5)5 -> (5) * 5
-		for (int number = 0; number <= 9; number++) {
+    	//Also replaces instances of numbers before log and exp operators with a multiplication operator(*) such as:
+    	//	5log10 -> 5*log10
+    	//	5exp10 -> 5*log10
+		for (int number = 0; number <= 9; number++) 
+		{
 			equation = equation.replace(number + "(", number + "*(");
 			equation = equation.replace(")" + number, ")*" + number);
+			equation = equation.replace(number + "log", number + "*log");
+			equation = equation.replace(number + "exp", number + "*exp");
 		}		
-		//userInput = userInput.replace("-(", "-1*(");
+		equation = equation.replace("-(", "-1*(");
 
         System.out.println("interpreted as:" + equation);
     	
@@ -278,12 +284,14 @@ public class Interpriter {
     		// Account for equations with two operators in a row unless the second operator is a '-' operator.
     		else if (currentChar < equation.length() - 1 
     				&& isOperator(equation.charAt(currentChar)) 
-    				&& isOperator(equation.charAt(currentChar + 1)) && equation.charAt(currentChar + 1) != '-')
+    				&& isOperator(equation.charAt(currentChar + 1)) && equation.charAt(currentChar + 1) != '-'
+    				&& equation.charAt(currentChar + 1) != 'l' && equation.charAt(currentChar + 1) != 'e')
     		{
     			System.out.println("There are two operators in a row that cannot be resolved.");
     			return false;
     		}
-    		else if (isOperator(equation.charAt(currentChar)) && currentChar != 0)
+    		else if (isOperator(equation.charAt(currentChar)) && currentChar != 0
+    					|| (currentChar == 0 && (equation.charAt(currentChar) == 'l' || equation.charAt(currentChar) == 'e')))
     		{
     			operatorCount++;
     		}
