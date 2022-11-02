@@ -16,6 +16,29 @@ public class Interpriter {
      * @return result calculated from the equation.
      */
     public static String calculate(String equation) {
+    	
+    	if (equation == null || equation.equals(""))
+    	{
+    		return "Error: please enter an equation";
+    	}
+    	
+    	//remove white spaces from equation
+    	equation = equation.replaceAll("\\s+","");
+
+    	equation = equation.replace("+-","-");
+    	equation = equation.replace("-+", "-");
+    	equation = equation.replace("--", "+");
+		//Replaces instances of numbers beside brackets with the two number separated with a multiplication operator(*) such as:
+		// 5(5) -> 5*(5)
+		// (5)5 -> (5) * 5
+		for (int number = 0; number <= 9; number++) {
+			equation = equation.replace(number + "(", number + "*(");
+			equation = equation.replace(")" + number, ")*" + number);
+		}		
+		//userInput = userInput.replace("-(", "-1*(");
+
+        System.out.println("interpreted as:" + equation);
+    	
     	if (!isValidEquation(equation)) {
     		return "Error: problem found in equation";
     	}
@@ -83,24 +106,7 @@ public class Interpriter {
      */
     private static String[] splitEquation(String eq) {
         ArrayList<String> splitEq = new ArrayList<String>();
-
-        //remove white spaces from equation
-        eq = eq.replaceAll("\\s+","");
-
-		eq = eq.replace("+-","-");
-		eq = eq.replace("-+", "-");
-		eq = eq.replace("--", "+");
-		//Replaces instances of numbers beside brackets with the two number separated with a multiplication operator(*) such as:
-		// 5(5) -> 5*(5)
-		// (5)5 -> (5) * 5
-		for (int number = 0; number <= 9; number++) {
-		    eq = eq.replace(number + "(", number + "*(");
-		    eq = eq.replace(")" + number, ")*" + number);
-		}		
-		//userInput = userInput.replace("-(", "-1*(");
-
-        System.out.println("interpreted as:" + eq);
-        
+       
         //changes "exp" to 'e' and "log" to 'l' so they can be considered operators
     	eq = eq.replace("exp","e");
     	eq = eq.replace("log","l");
@@ -198,11 +204,11 @@ public class Interpriter {
      * @param equation String representing the equation.
      * @return True if the equation is valid. False, otherwise.
      */
-    public static boolean isValidEquation(String equation) {
+    private static boolean isValidEquation(String equation) {
     	int openBracketsCount = 0;
     	int closeBracketsCount = 0;
     	int operatorCount = 0;
-    	
+    	  	
         //changes "exp" to 'e' and "log" to 'l' so they can be considered operators
     	equation = equation.replace("exp","e");
     	equation = equation.replace("log","l");
@@ -269,11 +275,12 @@ public class Interpriter {
     			System.out.println("6");
     			return false;
     		}
-    		// Account for equations with two operators in a row.
-    		else if (currentChar < equation.length() - 1 && isOperator(equation.charAt(currentChar)) 
-    				&& equation.charAt(currentChar) == equation.charAt(currentChar + 1))
+    		// Account for equations with two operators in a row unless the second operator is a '-' operator.
+    		else if (currentChar < equation.length() - 1 
+    				&& isOperator(equation.charAt(currentChar)) 
+    				&& isOperator(equation.charAt(currentChar + 1)) && equation.charAt(currentChar + 1) != '-')
     		{
-    			System.out.println("There are duplicate operators that cannot be resolved.");
+    			System.out.println("There are two operators in a row that cannot be resolved.");
     			return false;
     		}
     		else if (isOperator(equation.charAt(currentChar)) && currentChar != 0)
@@ -288,17 +295,17 @@ public class Interpriter {
     	//	1+2+3)
     	if (openBracketsCount != closeBracketsCount)
 		{
-    		System.out.println("7");
+    		System.out.println("Error: Syntax error involving brackets.");
 			return false;
 		}
     	
     	// Accounts for sole numbers such as:
     	//	1
-//    	if (operatorCount == 0)
-//    	{
-//    		System.out.println("Please enter an equation with operators.");
-//    		return false;
-//    	}
+    	if (operatorCount == 0)
+    	{
+    		System.out.println("Please enter an equation with operators.");
+    		return false;
+    	}
     	 
     	return true;
     }
