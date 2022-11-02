@@ -56,6 +56,7 @@ public class CalculatorInput
                 {
                     exit = true;
                     System.out.println("You have exited the program");
+                    return null;
                 }
                 else
                 {

@@ -135,37 +135,59 @@ class DemoApplicationTests
 	    assertEquals("Test division using negative numbers", output, Interpriter.calculate(input));
 	}
 	
-	// Tests interpreter cal
+	// Tests interpreter calculate() powers.
+	@Test
+	public void calculatePowers()
+	{
+		// basic power test
+	    String input = "5^5";
+	    String output = "3125.000";
+	    assertEquals("Test with basic power '5^5' ", output, Interpriter.calculate(input));
+
+	    // complex power test
+	    input = "44 ^    2.5556 ^ 0.232";
+	    output = "9.428";
+	    assertEquals("Test with complex power '44 ^    2.5556 ^ 0.232' ", output, Interpriter.calculate(input));
+	    
+	    input = "44/2^2";
+	    output = "11.000";
+	    assertEquals("Test powers and division in the same equation.", output, Interpriter.calculate(input));
+	    
+	    input = "44*2^2";
+	    output = "176.000";
+	    assertEquals("Test powers and multiplication in the same equation.", output, Interpriter.calculate(input));
+	    
+	    input = "44*2^2/5^5";
+	    output = ".056";
+	    assertEquals("Test powers, division and multiplication in the same equation.", output, Interpriter.calculate(input));
+	    
+	    input = "44*2^-2/5^5";
+	    output = ".004";
+	    assertEquals("Test powers, division, multiplication and negatives in equation.", output, Interpriter.calculate(input));
+	}
 	
-	
-	/**
+	// Test interpreter calculate brackets.
+	@Test
+	public void calculateBracket()
+	{
+		 // basic bracket test
+	    String input = "(5+5) + (4+4)";
+	    String output = "18.000";
+	    assertEquals("Test with basic bracket '(5+5) + (4+4)' ", output, Interpriter.calculate(input));
 
-    
-
-
-    
-
-
-    // basic exponent test
-    String test10Input = "5^5";
-    String test10Output = "3125.00";
-    assertEquals("Test with basic exponent '5^5' ", test10Output, Interpriter.calculate(test10Input));
-
-    // complex exponent test
-    String test11Input = "44 ^    2.5556 ^ 0.232";
-    String test11Output = "9.43";
-    assertEquals("Test with complex exponent '44 ^    2.5556 ^ 0.232' ", test11Output, Interpriter.calculate(test11Input));
-
-
-    // basic bracket test
-    String test12Input = "(5+5) + (4+4)";
-    String test12Output = "18.00";
-    assertEquals("Test with basic bracket '(5+5) + (4+4)' ", test12Output, Interpriter.calculate(test12Input));
-
-    // complex bracket test
-    String test13Input = "(44 ^    2.5556) ^ 0.232";
-    String test13Output = "9.43";
-    assertEquals("Test with complex bracket '(44 ^    2.5556) ^ 0.232' ", test13Output, Interpriter.calculate(test13Input));
-    */
+	    // complex bracket test
+	    input = "(44 ^    2.5556) ^ 0.232";
+	    output = "9.428";
+	    assertEquals("Test with complex bracket '(44 ^    2.5556) ^ 0.232' ", output, Interpriter.calculate(input));
+	    
+	    input = "5(-20)";
+	    output = "-100.000";
+	    assertEquals("Test brackets resolving to multiplication.", output, Interpriter.calculate(input));
+	    
+	    input = "(5^(2*3)/-25/5^2)+-50--(10)4";
+	    output = "-35.000";
+	    assertEquals("Test with comples brackets '(5^(2*3)/-25/5^2)+-50--(10)4'.", output, Interpriter.calculate(input));
+	    
+	}
 
 }

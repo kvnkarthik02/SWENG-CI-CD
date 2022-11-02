@@ -231,9 +231,9 @@ public class Interpriter {
     		{
     			// Accounts for equations where an operator is after an open bracket such as:
     			//	1+(*2+3)
-    			if (isOperator(equation.charAt(currentChar + 1)) && equation.charAt(currentChar + 1) != 'e' && equation.charAt(currentChar + 1) != 'l')
+    			if (isOperator(equation.charAt(currentChar + 1)) && equation.charAt(currentChar + 1) != '-'
+    					&& equation.charAt(currentChar + 1) != 'e' && equation.charAt(currentChar + 1) != 'l')
     			{
-    				System.out.println("error2");
     				return false;
     			}
     			openBracketsCount++;
