@@ -1,9 +1,9 @@
 package com.webCalc.springboot.demo;
 
-public class Calculator {
+public class Calculator extends Interpriter{
     private String input;
     private String answer;
-
+    
     public String getInput(){
         return input;
     }
@@ -13,11 +13,8 @@ public class Calculator {
     }
 
     public String getAnswer(){
+        answer = calculate(input);
         return answer;
-    }
-
-    public void setMessage(String message){
-        this.answer = message;
     }
 
 }
