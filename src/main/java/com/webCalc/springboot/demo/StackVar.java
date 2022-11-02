@@ -1,3 +1,5 @@
+package com.webCalc.springboot.demo;
+
 public class StackVar<T> {
     private T item;
     public StackVar<T> nextVar;

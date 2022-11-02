@@ -11,14 +11,11 @@
         <#if calc?? >
             Your submitted data<br>
             Name: ${calc.input}<br>
-            Message: ${calc.answer}<br>
+            Answer: ${calc.answer}<br>
         <#else>
             <form action="/form" method="post">
                 <div>Input:</div>
                 <input type="text" name="input"/>
-                <br/><br/>
-                <div>Message:</div>
-                <textarea rows="2" name="message"></textarea>
                 <br/><br/>
                 <input type="submit" value="Submit"/>
                 <input type="reset" value="Reset"/>
