@@ -23,12 +23,10 @@ public class CalculatorInput
 
             if (equation != null)
             {
-                if (Interpriter.isValidEquation(equation))
-                {
-                    //Call function here to resolve equation.
-                    System.out.println("Answer: " + Interpriter.calculate(equation));
-                }
-                else System.out.println("Please input a valid equation.");
+
+            	//Call function here to resolve equation.
+            	System.out.println("Answer: " + Interpriter.calculate(equation));
+
             }
         }
 
@@ -58,6 +56,7 @@ public class CalculatorInput
                 {
                     exit = true;
                     System.out.println("You have exited the program");
+                    return null;
                 }
                 else
                 {
