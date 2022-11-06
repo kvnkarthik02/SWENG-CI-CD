@@ -7,27 +7,55 @@ body {
 }
 
 img {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 h1 {
-  font-family: "Lucida Console", "Courier New", monospace;
-  text-align: center;
+    font-family: "Lucida Console", "Courier New", monospace;
+    text-align: center;
 }
 
 h2 {
-  font-family: "Times New Roman", Times, serif;
-  text-align: center;
+    font-family: "Times New Roman", Times, serif;
+    text-align: center;
 }
 
 p {
- text-align: center;
+    text-align: center;
 }
 
 form {
-text-align: center;
+    text-align: center;
+}
+
+.one{
+    text-align: center;
+}
+
+.two{
+    font-weight: bold;
+    text-align: center;
+    padding: 14px 16px;
+
+}
+
+.three{
+	  text-align: center;
+}
+
+.four{
+    font-weight: bold;
+	  text-align: center;
+    padding: 14px 16px;
+}
+
+.five{
+    text-align: center;
+    padding: 14px 16px;
+    border: 1px solid black;
+    background-color: lightblue;
 }
 
 body * {
