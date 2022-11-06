@@ -18,12 +18,29 @@
           <#else>
         </p>
             <form action="/form" method="post">
-                <div>Please Enter a Mathematical Expression</div>
+                <div class="one">Please Enter a Mathematical Expression</div>
                 <input type="text" name="input"/>
                 <br/><br/>
                 <input type="submit" value="Submit"/>
                 <input type="reset" value="Reset"/>
             </form>
+
+            <div class="four">Members:</div>
+
+            <div class="three">
+            	  <div class="one">Karthik Venkatesh Nagaraj.. (kvnkarthik02)</div>
+                <div class="one">William Walsh-Dowd.. (sanechuckles2)</div>
+                <div class="one">Gerald Moore Paris.. (gmbparis)</div>
+                <div class="one">Jhellen Kyle Daniel Agsalud.. (xkylus)</div>
+            </div>
+
+            <div class="two"></div>
+
+            <div class="five">
+            	  <div class="one">Link to Github Repository</div>
+                <a href="https://github.com/kvnkarthik02/SWENG-CI-CD">SWENG Assignment 2 Repository</a>
+            </div>
+
         </#if>
         <script src="/js/main.js"></script>
     </body>
